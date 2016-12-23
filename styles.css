@@ -1,0 +1,71 @@
+input.widebutton {
+    background-color: #4CAF50; /* Green */
+    border-style: dashed;
+    border-width: 3px;
+    border-color: #7FE486;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    
+    display: inline-block;
+    font-size: 16px;
+}
+input.longbutton {
+    background-color:  #a40500; /* Red */
+    border-style: dashed;
+    border-width: 3px;
+    border-color: #f44336;
+    color: white;
+    padding: 70px 10px;
+    text-align: center;
+    
+    display: inline-block;
+    font-size: 16px;
+}
+form.selectorform {
+    background:#333333; 
+    padding-top: 15px; 
+    padding-bottom: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    color:#ffffff;
+}
+form.longbuttonform {
+  height: auto;
+  min-height: 100%;
+}
+tr.headerrow {
+   background-color:#4194C0; 
+   padding-top: 15px; 
+   padding-bottom: 15px;
+   text-align: center;
+   text-decoration: none;
+   color: white;
+}
+table.imgtable{
+   border: none;
+}
+body {
+  font-family: Arial;
+}
+input.edits {
+  font-family: Times New Roman;
+  font-size: 1.0em;
+  width:100%;
+  background-color: #e3e3e3;
+}
+input.edits:focus {
+  background-color: #eeee00;
+}
+td.editlabels {
+  font-weight: bold;
+}
+h3.imgName {
+  text-align: center;
+  padding-top: 3px; 
+  padding-bottom: 3px;
+  padding-left: 3px;
+  padding-right: 3px;
+  background-color: #81C4F0;
+  color: #FFFFFF;
+}

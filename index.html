@@ -7,10 +7,11 @@
   <link type="image/x-icon" rel="shortcut icon" href="js9/favicon.ico">
   <link type="text/css" rel="stylesheet" href="js9/js9support.css">
   <link type="text/css" rel="stylesheet" href="js9/js9.css">
+  <link rel="stylesheet" href="styles.css">
   <script type="text/javascript" src="js9/js9support.min.js"></script>
   <script type="text/javascript" src="js9/js9.min.js"></script>
   <script type="text/javascript" src="js9/js9plugins.js"></script>
-  <title>JS9</title>
+  <title>RARG Looking Glass</title>
   
   <script type="text/javascript">
     function createElement(element,attribute,inner){
@@ -36,17 +37,21 @@
     var js9_uniqueid = 0;
     function addImage(urlRef,urlCompare,urlDiff){      
 	// make up the html with the unique id
-	refId = "refimg"+js9_uniqueid;
-	outImgId = "outimg"+js9_uniqueid;
-        diffImgId = "diffimg"+js9_uniqueid;
+	refId = "refimg" + js9_uniqueid;
+	outImgId = "outimg" + js9_uniqueid;
+        diffImgId = "diffimg" + js9_uniqueid;
+        closeButtonId = "btnClose" + js9_uniqueid;
         tbl = document.getElementById("tblImgs");
         row = tbl.insertRow(1);
-        refImg = row.insertCell(0);
-        compareImg = row.insertCell(1);
-        diffImg = row.insertCell(2);
-        refImg.innerHTML = sprintf("<h3>%s</h2><div class='JS9Menubar' id='%sMenubar'></div><div class='JS9' id='%s'></div><div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", urlRef, refId, refId, refId);
-        compareImg.innerHTML = sprintf("<h3>%s</h2><div class='JS9Menubar' id='%sMenubar'></div><div class='JS9' id='%s'></div><div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", urlCompare, outImgId, outImgId, outImgId);
-        diffImg.innerHTML = sprintf("<h3>%s</h2><div class='JS9Menubar' id='%sMenubar'></div><div class='JS9' id='%s'></div><div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", urlDiff, diffImgId, diffImgId, diffImgId);
+        row.id = "imrow" + js9_uniqueid;
+        closerow = row.insertCell(0);
+        closerow.innerHTML = sprintf("<form class=\"longbuttonform\"><input class=\"longbutton\" type=\"button\" value=\"X\" id=\"%s\"/ onClick=\"onRowClose(this)\"></form>", closeButtonId)
+        refImg = row.insertCell(1);
+        compareImg = row.insertCell(2);
+        diffImg = row.insertCell(3);
+        refImg.innerHTML = sprintf("<h3 class=\"imgName\">%s</h3><div class='JS9Menubar' id='%sMenubar'></div><div class='JS9' id='%s'></div><div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", urlRef, refId, refId, refId);
+        compareImg.innerHTML = sprintf("<h3 class=\"imgName\">%s</h2><div class='JS9Menubar' id='%sMenubar'></div><div class='JS9' id='%s'></div><div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", urlCompare, outImgId, outImgId, outImgId);
+        diffImg.innerHTML = sprintf("<h3 class=\"imgName\">%s</h3><div class='JS9Menubar' id='%sMenubar'></div><div class='JS9' id='%s'></div><div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", urlDiff, diffImgId, diffImgId, diffImgId);
  
         JS9.checkNew(new JS9.Display(refId));
 	JS9.helper.send("addDisplay", {"display": refId});        
@@ -64,35 +69,112 @@
         js9_uniqueid++;
     }
     
+    function onRowClose(sender){
+	rowNumber = sender.id.substring(8, sender.id.length);
+	row = document.getElementById("imrow" + rowNumber);
+	tbl = document.getElementById("tblImgs");
+	tbl.deleteRow(row.rowIndex);
+    }
+    
     function parseImgList(refUrl,compareUrl,prefix,postfix){
       list_post = postfix.split(" ");
       for (i = 0; i < list_post.length; i++){
-	urlRef = refUrl + "/" + prefix + list_post[i] + ".fits";
-	urlCompare = compareUrl + "/" + prefix + ".run" + list_post[i] + ".fits";
-        urlDiff = compareUrl + "/" + prefix + ".diff" + list_post[i] + ".fits";
+	urlRef = refUrl + "/" + prefix + list_post[i];
+	urlCompare = compareUrl + "/" + prefix + ".run" + list_post[i];
+        urlDiff = compareUrl + "/" + prefix + ".diff" + list_post[i];
 	addImage(urlRef,urlCompare,urlDiff);
       }
     }
   </script>
   
-  
-  
   <script type="text/javascript">
+      function getQueryVariable(variable) {
+	// Ref: http://www.idealog.us/2006/06/javascript_to_p.html
+	// Return querystring variable if exists, null otherwise
+	var query = window.location.search.substring(1);
+	var vars = query.split('&');
+	for (var i = 0; i < vars.length; i++) {
+	    var pair = vars[i].split('=');
+	    if (decodeURIComponent(pair[0]) == variable)
+		return decodeURIComponent(pair[1]);
+	}
+	return null;
+      }
+  
       $(document).ready(function(){
-	    
+	   defaultDomainURL = "http://jenkins.meqtrees.net";
+	   s = getQueryVariable("DomainURL");
+	   if (s != null) 
+	      defaultDomainURL = s;
+	      
+	   defaultRefDirURL = "test-data";
+	   s = getQueryVariable("RefDirURL");
+	   if (s != null) 
+	      defaultRefDirURL = s;
+	   defaultRefDirURL = defaultDomainURL + defaultRefDirURL ;
+	   
+	   defaultCompDirURL = "test-output/71";
+	   s = getQueryVariable("CompDirURL");
+	   if (s != null) 
+	      defaultCompDirURL = s;
+	   defaultCompDirURL = defaultDomainURL + defaultCompDirURL ;
+	   
+	   defaultImagePrefix = "Test3C147";
+	   s = getQueryVariable("ImagePrefix");
+	   if (s != null) 
+	      defaultImagePrefix = s;
+	      
+	   defaultImagePostfixes = "dirty.fits dirty.corr.fits app.restored.fits";
+	   s = getQueryVariable("ImagePostfixes");
+	   if (s != null) 
+	      defaultImagePostfixes = s;
+	   if (defaultImagePostfixes != ""){
+	      arrPrefixes = defaultImagePostfixes.split(" ");
+	      defaultImagePostfixes = ""
+	      for (i = 0; i < arrPrefixes.length; ++i){
+		  if (arrPrefixes[i][0] != '.')
+		    arrPrefixes[i] = "." + arrPrefixes[i];
+		  defaultImagePostfixes = defaultImagePostfixes + arrPrefixes[i];
+		  if (i < arrPrefixes.length - 1)
+		    defaultImagePostfixes = defaultImagePostfixes + " "
+	      }
+	   }
+	   
+	  document.getElementById("edtRef").value = defaultRefDirURL;
+	  document.getElementById("edtCompare").value = defaultCompDirURL;
+	  document.getElementById("edtPrefix").value = defaultImagePrefix;
+	  document.getElementById("edtPostfix").value = defaultImagePostfixes;
       });
   </script>
     
 </head>
 <body>
-    <form style="background:#dddddd; padding-top: 15px; padding-bottom: 15px;">
-      <p>Reference images directory: <input type="text" id="edtRef" value="http://jenkins.meqtrees.net/test-data/" size="60"/> </p>
-      <p>Compare images directory: <input type="text" id="edtCompare" value="http://jenkins.meqtrees.net/test-output/71/testcase_output/" size="60"/> </p>
-      <p>Prefix: <input type="text" id="edtPrefix" value="Test3C147" size="60"/> </p>
-      <p>Postfix List: <input type="text" id="edtPostfix" value=".dirty .dirty.corr .app.restored" size="60"/> </p>
-      <p style="text-align: right"><input type="button" value="Load" onClick="parseImgList(document.getElementById('edtRef').value,document.getElementById('edtCompare').value,document.getElementById('edtPrefix').value,document.getElementById('edtPostfix').value);"/></p>
+    <form class="selectorform">
+      <table width="100%">
+	<tbody>
+	  <tr>
+	    <td class="editlabels" width="30%">Reference images directory: </td>
+	    <td width="70%"><input class="edits" type="text" id="edtRef" value=defaultRefDirURL/> </td>
+	  </tr>
+	  <tr>
+	    <td class="editlabels" width="30%">Compare images directory: </td>
+	    <td width="70%"><input class="edits" type="text" id="edtCompare" value=defaultCompDirURL/> </td>
+	  <tr>
+	  <tr>
+	    <td class="editlabels" width="30%">Prefix: </td>
+	    <td width="70%"><input class="edits" type="text" id="edtPrefix" value=defaultImagePrefix/> </td>
+	  </tr>
+	  <tr>
+	    <td class="editlabels" width="30%">Postfix List: </td>
+	    <td width="70%"><input class="edits" type="text" id="edtPostfix" value=defaultImagePostfixes/> </td>
+	  </tr>
+	  <tr>
+	    <td/><td style="text-align: right"><input class="widebutton" type="button" value="Load" width="200" onClick="parseImgList(document.getElementById('edtRef').value,document.getElementById('edtCompare').value,document.getElementById('edtPrefix').value,document.getElementById('edtPostfix').value);"/></td>
+	  </tr>
+	</tbody>
+      </table>
     </form>
-    <table id='tblImgs' border="1px" width="100%"><tr><td width="33%"><h2>Reference Images</h2></td><td width="33%"><h2>Compared Images</h2></td><td width="33%"><h2>Difference Map</h2></td><tr></table>
+    <table class="imgtable" id="tblImgs" width="100%"><tr class="headerrow"><td width="2.5%"></td><td width="32.5%"><h2>Reference Images</h2></td><td width="32.5%"><h2>Compared Images</h2></td><td width="32.5%"><h2>Difference Map</h2></td><tr></table>
 <p>
 </body>
 </html>
