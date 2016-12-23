@@ -102,29 +102,29 @@
       }
   
       $(document).ready(function(){
-	   defaultDomainURL = "http://jenkins.meqtrees.net";
+	   defaultDomainURL = "";
 	   s = getQueryVariable("DomainURL");
 	   if (s != null) 
 	      defaultDomainURL = s;
 	      
-	   defaultRefDirURL = "test-data";
+	   defaultRefDirURL = "data";
 	   s = getQueryVariable("RefDirURL");
 	   if (s != null) 
 	      defaultRefDirURL = s;
 	   defaultRefDirURL = defaultDomainURL + defaultRefDirURL ;
 	   
-	   defaultCompDirURL = "test-output/71";
+	   defaultCompDirURL = "output";
 	   s = getQueryVariable("CompDirURL");
 	   if (s != null) 
 	      defaultCompDirURL = s;
 	   defaultCompDirURL = defaultDomainURL + defaultCompDirURL ;
 	   
-	   defaultImagePrefix = "Test3C147";
+	   defaultImagePrefix = "TestWidefieldDirty";
 	   s = getQueryVariable("ImagePrefix");
 	   if (s != null) 
 	      defaultImagePrefix = s;
 	      
-	   defaultImagePostfixes = "dirty.fits dirty.corr.fits app.restored.fits";
+	   defaultImagePostfixes = "dirty.fits";
 	   s = getQueryVariable("ImagePostfixes");
 	   if (s != null) 
 	      defaultImagePostfixes = s;
