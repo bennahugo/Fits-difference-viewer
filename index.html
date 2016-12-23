@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" > 
+  <link type="image/x-icon" rel="shortcut icon" href="js9/favicon.ico">
+  <link type="text/css" rel="stylesheet" href="js9/js9support.css">
+  <link type="text/css" rel="stylesheet" href="js9/js9.css">
+  <script type="text/javascript" src="js9/js9support.min.js"></script>
+  <script type="text/javascript" src="js9/js9.min.js"></script>
+  <script type="text/javascript" src="js9/js9plugins.js"></script>
+  <title>JS9</title>
+  
+  <script type="text/javascript">
+    function createElement(element,attribute,inner){
+      if(typeof(element) === "undefined"){return false;}
+      if(typeof(inner) === "undefined"){inner = "";}
+      var el = document.createElement(element);
+      if(typeof(attribute) === 'object'){
+	for(var key in attribute){
+	  el.setAttribute(key,attribute[key]);
+	}
+      }
+      if(!Array.isArray(inner)){inner = [inner];}
+      for(var k = 0;k < inner.length;k++){
+	if(inner[k].tagName){
+	 el.appendChild(inner[k]);
+	}else{
+	  el.appendChild(document.createTextNode(inner[k]));
+	}
+      }
+      return el;
+    }
+  
+    var js9_uniqueid = 0;
+    function addImage(urlRef,urlCompare,urlDiff){      
+	// make up the html with the unique id
+	refId = "refimg"+js9_uniqueid;
+	outImgId = "outimg"+js9_uniqueid;
+        diffImgId = "diffimg"+js9_uniqueid;
+        tbl = document.getElementById("tblImgs");
+        row = tbl.insertRow(1);
+        refImg = row.insertCell(0);
+        compareImg = row.insertCell(1);
+        diffImg = row.insertCell(2);
+        refImg.innerHTML = sprintf("<h3>%s</h2><div class='JS9Menubar' id='%sMenubar'></div><div class='JS9' id='%s'></div><div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", urlRef, refId, refId, refId);
+        compareImg.innerHTML = sprintf("<h3>%s</h2><div class='JS9Menubar' id='%sMenubar'></div><div class='JS9' id='%s'></div><div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", urlCompare, outImgId, outImgId, outImgId);
+        diffImg.innerHTML = sprintf("<h3>%s</h2><div class='JS9Menubar' id='%sMenubar'></div><div class='JS9' id='%s'></div><div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", urlDiff, diffImgId, diffImgId, diffImgId);
+ 
+        JS9.checkNew(new JS9.Display(refId));
+	JS9.helper.send("addDisplay", {"display": refId});        
+        JS9.checkNew(new JS9.Display(outImgId));
+	JS9.helper.send("addDisplay", {"display": outImgId});
+	JS9.checkNew(new JS9.Display(diffImgId));
+	JS9.helper.send("addDisplay", {"display": diffImgId});
+
+        JS9.instantiatePlugins();
+        
+        //load
+        JS9.Load(urlRef, {"display": refId});
+        JS9.Load(urlCompare, {"display": outImgId});
+        JS9.Load(urlDiff, {"display": diffImgId});
+        js9_uniqueid++;
+    }
+    
+    function parseImgList(refUrl,compareUrl,prefix,postfix){
+      list_post = postfix.split(" ");
+      for (i = 0; i < list_post.length; i++){
+	urlRef = refUrl + "/" + prefix + list_post[i] + ".fits";
+	urlCompare = compareUrl + "/" + prefix + ".run" + list_post[i] + ".fits";
+        urlDiff = compareUrl + "/" + prefix + ".diff" + list_post[i] + ".fits";
+	addImage(urlRef,urlCompare,urlDiff);
+      }
+    }
+  </script>
+  
+  
+  
+  <script type="text/javascript">
+      $(document).ready(function(){
+	    
+      });
+  </script>
+    
+</head>
+<body>
+    <form style="background:#dddddd; padding-top: 15px; padding-bottom: 15px;">
+      <p>Reference images directory: <input type="text" id="edtRef" value="http://jenkins.meqtrees.net/test-data/" size="60"/> </p>
+      <p>Compare images directory: <input type="text" id="edtCompare" value="http://jenkins.meqtrees.net/test-output/71/testcase_output/" size="60"/> </p>
+      <p>Prefix: <input type="text" id="edtPrefix" value="Test3C147" size="60"/> </p>
+      <p>Postfix List: <input type="text" id="edtPostfix" value=".dirty .dirty.corr .app.restored" size="60"/> </p>
+      <p style="text-align: right"><input type="button" value="Load" onClick="parseImgList(document.getElementById('edtRef').value,document.getElementById('edtCompare').value,document.getElementById('edtPrefix').value,document.getElementById('edtPostfix').value);"/></p>
+    </form>
+    <table id='tblImgs' border="1px" width="100%"><tr><td width="33%"><h2>Reference Images</h2></td><td width="33%"><h2>Compared Images</h2></td><td width="33%"><h2>Difference Map</h2></td><tr></table>
+<p>
+</body>
+</html>
