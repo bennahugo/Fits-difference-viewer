@@ -6,9 +6,16 @@ input.widebutton {
     color: white;
     padding: 15px 32px;
     text-align: center;
-    
     display: inline-block;
     font-size: 16px;
+}
+input.widebutton:hover {
+    background-color: #5CBF60; /* Green */
+    border-color: #8FF496;
+}
+input.widebutton:active {
+    background-color: #1C7F10; /* Green */
+    border-color: #4FB456;
 }
 input.longbutton {
     background-color:  #a40500; /* Red */
@@ -21,6 +28,14 @@ input.longbutton {
     
     display: inline-block;
     font-size: 16px;
+}
+input.longbutton:hover {
+    background-color:  #c43530; /* Red */
+    border-color: #ff7356;
+}
+input.longbutton:active {
+    background-color:  #540000; /* Red */
+    border-color: #c41306;
 }
 form.selectorform {
     background:#333333; 
@@ -57,6 +72,7 @@ input.edits {
 input.edits:focus {
   background-color: #eeee00;
 }
+
 td.editlabels {
   font-weight: bold;
 }
