@@ -54,18 +54,26 @@
         diffImg.innerHTML = sprintf("<h3 class=\"imgName\">%s</h3><div class='JS9Menubar' id='%sMenubar'></div><div class='JS9' id='%s'></div><div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", urlDiff, diffImgId, diffImgId, diffImgId);
  
         JS9.checkNew(new JS9.Display(refId));
-	JS9.helper.send("addDisplay", {"display": refId});        
+	JS9.helper.send("addDisplay", {display: refId});
         JS9.checkNew(new JS9.Display(outImgId));
-	JS9.helper.send("addDisplay", {"display": outImgId});
+	JS9.helper.send("addDisplay", {display: outImgId});
 	JS9.checkNew(new JS9.Display(diffImgId));
-	JS9.helper.send("addDisplay", {"display": diffImgId});
+	JS9.helper.send("addDisplay", {display: diffImgId});
 
         JS9.instantiatePlugins();
         
-        //load
-        JS9.Load(urlRef, {"display": refId});
-        JS9.Load(urlCompare, {"display": outImgId});
-        JS9.Load(urlDiff, {"display": diffImgId});
+        //load        
+        JS9.Load(urlRef, {display: refId, 
+			  colormap: "viridis", 
+			  zoom: "toFit"});
+        JS9.Load(urlCompare, {display: outImgId, 
+			      colormap: "viridis", 
+			      zoom: "toFit"});
+        JS9.Load(urlDiff, {display: diffImgId, 
+			   colormap: "viridis", 
+			   zoom: "toFit",
+			   scale: "histeq"});
+        JS9.SetColormap("aips0", {display: refId});
         js9_uniqueid++;
     }
     
