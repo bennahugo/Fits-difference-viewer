@@ -45,14 +45,51 @@
         row = tbl.insertRow(1);
         row.id = "imrow" + js9_uniqueid;
         closerow = row.insertCell(0);
-        closerow.innerHTML = sprintf("<form class=\"longbuttonform\"><input class=\"longbutton\" type=\"button\" value=\"X\" id=\"%s\"/ onClick=\"onRowClose(this)\"></form>", closeButtonId)
+        closerow.innerHTML = sprintf("<form class=\"longbuttonform\">" + 
+	  "<input class=\"longbutton\" type=\"button\" value=\"X\" id=\"%s\"/ onClick=\"onRowClose(this)\">" + 
+	  "</form>", closeButtonId)
         refImg = row.insertCell(1);
         compareImg = row.insertCell(2);
         diffImg = row.insertCell(3);
-        refImg.innerHTML = sprintf("<h3 class=\"imgName\">%s</h3><div class='JS9Menubar' id='%sMenubar'></div><div class='JS9' id='%s'></div><div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", urlRef, refId, refId, refId);
-        compareImg.innerHTML = sprintf("<h3 class=\"imgName\">%s</h2><div class='JS9Menubar' id='%sMenubar'></div><div class='JS9' id='%s'></div><div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", urlCompare, outImgId, outImgId, outImgId);
-        diffImg.innerHTML = sprintf("<h3 class=\"imgName\">%s</h3><div class='JS9Menubar' id='%sMenubar'></div><div class='JS9' id='%s'></div><div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", urlDiff, diffImgId, diffImgId, diffImgId);
- 
+        refImg.innerHTML = sprintf("<h3 class='imgName'>%s</h3>" +
+	  "<div id='%sNormCtrls' class='imgprops'>" + 
+	    "<form>" + 
+	      "Min: <input id='%sNormCtrlsMin' type='text' class='imgmaxima'/>" +
+	      " Max: <input id='%sNormCtrlsMax' type='text' class='imgmaxima'/>" + 
+	    "</form>" + 
+	  "</div>" +
+	  "<div class='JS9Menubar' id='%sMenubar'></div>" +
+	  "<div class='JS9' id='%s'></div>" +
+	  "<div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", 
+	  urlRef, refId, refId, refId, refId, refId, refId, refId);
+	document.getElementById(refId + "NormCtrlsMin").disabled = true;
+	document.getElementById(refId + "NormCtrlsMax").disabled = true;
+        compareImg.innerHTML = sprintf("<h3 class='imgName'>%s</h3>" + 
+	  "<div id='%sNormCtrls' class='imgprops'>" + 
+	    "<form>" + 
+	      "Min: <input id='%sNormCtrlsMin' type='text' class='imgmaxima'/>" +
+	      " Max: <input id='%sNormCtrlsMax' type='text' class='imgmaxima'/>" + 
+	    "</form>" + 
+	  "</div>" +
+	  "<div class='JS9Menubar' id='%sMenubar'></div>" + 
+	  "<div class='JS9' id='%s'></div>" + 
+	  "<div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", 
+	  urlCompare, outImgId, outImgId, outImgId, outImgId, outImgId, outImgId, outImgId);
+	document.getElementById(outImgId + "NormCtrlsMin").disabled = true;
+	document.getElementById(outImgId + "NormCtrlsMax").disabled = true;
+        diffImg.innerHTML = sprintf("<h3 class='imgName'>%s</h3>" + 
+	  "<div id='%sNormCtrls' class='imgprops'>" + 
+	    "<form>" + 
+	      "Min: <input id='%sNormCtrlsMin' type='text' class='imgmaxima'/>" +
+	      " Max: <input id='%sNormCtrlsMax' type='text' class='imgmaxima'/>" + 
+	    "</form>" + 
+	  "</div>" +
+	  "<div class='JS9Menubar' id='%sMenubar'></div>" + 
+	  "<div class='JS9' id='%s'></div>" + 
+	  "<div style='margin-top: 2px;'><div class='JS9Colorbar' id='%sColorbar'></div></div>", 
+	  urlDiff, diffImgId, diffImgId, diffImgId, diffImgId, diffImgId, diffImgId, diffImgId);
+	document.getElementById(diffImgId + "NormCtrlsMin").disabled = true;
+	document.getElementById(diffImgId + "NormCtrlsMax").disabled = true;
         JS9.checkNew(new JS9.Display(refId));
 	JS9.helper.send("addDisplay", {display: refId});
         JS9.checkNew(new JS9.Display(outImgId));
@@ -63,24 +100,48 @@
         JS9.instantiatePlugins();
         
         //load        
-        JS9.Load(urlRef, {display: refId, 
+        JS9.Load(urlRef, {onload: onImageLoaded,
+			  display: refId, 
 			  colormap: "viridis", 
 			  zoom: "toFit"});
-        JS9.Load(urlCompare, {display: outImgId, 
+        JS9.Load(urlCompare, {onload: onImageLoaded,
+			      display: outImgId, 
 			      colormap: "viridis", 
 			      zoom: "toFit"});
-        JS9.Load(urlDiff, {display: diffImgId, 
+        JS9.Load(urlDiff, {onload: onImageLoaded,
+			   display: diffImgId, 
 			   colormap: "viridis", 
 			   zoom: "toFit",
 			   scale: "histeq"});
-        JS9.SetColormap("aips0", {display: refId});
         js9_uniqueid++;
+    }
+    
+    function onImageLoaded(img){
+      disp_id = img.display.id;
+      min_disp = document.getElementById(disp_id + "NormCtrlsMin");
+      max_disp = document.getElementById(disp_id + "NormCtrlsMax");
+      data = JS9.GetImageData(true, {display: disp_id});
+      // Find minima and maxima:
+      min_val = data.data[0];
+      max_val = data.data[0];
+      for (i = 0; i < data.data.length; ++i){
+	min_val = Math.min(min_val, data.data[i]);
+	max_val = Math.max(max_val, data.data[i]);
+      }
+      min_disp.value = min_val;
+      max_disp.value = max_val;
     }
     
     function onRowClose(sender){
 	rowNumber = sender.id.substring(8, sender.id.length);
 	row = document.getElementById("imrow" + rowNumber);
 	tbl = document.getElementById("tblImgs");
+	refId = "refimg" + rowNumber;
+	outImgId = "outimg" + rowNumber;
+        diffImgId = "diffimg" + rowNumber;
+        JS9.CloseImage({display: refId});
+        JS9.CloseImage({display: outImgId});
+        JS9.CloseImage({display: diffImgId});
 	tbl.deleteRow(row.rowIndex);
     }
     
@@ -96,6 +157,22 @@
   </script>
   
   <script type="text/javascript">
+      window.onbeforeunload = function (e) {
+	// Cleanup used memory otherwise the browser may hang onto it:
+	rows = document.getElementById("tblImgs").rows;
+	for (i = 0; i < rows.length; ++i){
+	  row = rows[i].id;
+	  rowNumber = row.substring(5, row.length);
+	  refId = "refimg" + rowNumber;
+	  outImgId = "outimg" + rowNumber;
+	  diffImgId = "diffimg" + rowNumber;
+	  JS9.CloseImage({display: refId});
+	  JS9.CloseImage({display: outImgId});
+	  JS9.CloseImage({display: diffImgId});
+	}
+	return true;
+      };
+  
       function getQueryVariable(variable) {
 	// Ref: http://www.idealog.us/2006/06/javascript_to_p.html
 	// Return querystring variable if exists, null otherwise
@@ -108,7 +185,7 @@
 	}
 	return null;
       }
-  
+      
       $(document).ready(function(){
 	   defaultDomainURL = "";
 	   s = getQueryVariable("DomainURL");

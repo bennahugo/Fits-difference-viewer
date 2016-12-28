@@ -85,3 +85,9 @@ h3.imgName {
   background-color: #81C4F0;
   color: #FFFFFF;
 }
+input.imgmaxima {
+  width: 60px;
+}
+div.imgprops {
+  text-align: center;
+}
