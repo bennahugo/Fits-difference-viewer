@@ -57,6 +57,9 @@ tr.headerrow {
    text-decoration: none;
    color: white;
 }
+tr.contentrow {
+   
+}
 table.imgtable{
    border: none;
 }
@@ -86,8 +89,57 @@ h3.imgName {
   color: #FFFFFF;
 }
 input.imgmaxima {
-  width: 60px;
+  width: 100px;
 }
 div.imgprops {
   text-align: center;
+  padding-top: 5px; 
+  padding-bottom: 5px;
+  font-weight: bold;
+}
+div.JS9Menubar {
+  background:#333333; 
+  width: 100%;
+}
+div.JS9MenubarContainer {
+  background:#333333; 
+}
+button.JS9Button {
+    background-color:  #ff9900; /* yellow */
+    border-style: dashed;
+    border-width: 3px;
+    border-color: #cc7a00;
+    color: white;
+    text-align: center;
+    display: inline-block;
+    font-size: 9px;
+}
+button.JS9Button:hover {
+    background-color:  #ffb84d; /* yellow */
+    border-color: #ffa31a;
+}
+button.JS9Button:active {
+    background-color:  #cc7a00; /* yellow */
+    border-color: #995c00;
+}
+div.canvas-container {
+  text-align: center;
+  width: 100%;
+}
+div.JS9 {
+  text-align: center;
+  width: 100%;
+}
+canvas.upper-canvas.JS9Layer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+div.canvas-container {
+  position: relative;
+  width: 100%;
+}
+div.JS9Container {
+  position: relative;
+  width: 100%;
 }

@@ -44,6 +44,7 @@
         tbl = document.getElementById("tblImgs");
         row = tbl.insertRow(1);
         row.id = "imrow" + js9_uniqueid;
+        row.className = "contentrow"
         closerow = row.insertCell(0);
         closerow.innerHTML = sprintf("<form class=\"longbuttonform\">" + 
 	  "<input class=\"longbutton\" type=\"button\" value=\"X\" id=\"%s\"/ onClick=\"onRowClose(this)\">" + 
@@ -113,6 +114,7 @@
 			   colormap: "viridis", 
 			   zoom: "toFit",
 			   scale: "histeq"});
+	
         js9_uniqueid++;
     }
     
